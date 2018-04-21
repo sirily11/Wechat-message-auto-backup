@@ -1,0 +1,1 @@
+sudo docker run -it -v "$(pwd)/":/usr/src/app/wechat --name mywechat wechat

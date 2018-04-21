@@ -1,9 +1,7 @@
 FROM python:3
 
-WORKDIR /usr/src/app/flask
-COPY . .
+WORKDIR /usr/src/app/wechat
+RUN pip install pyrebase
+RUN pip install itchat
 
-RUN pip install chatterbot
-
-CMD [ "python","chatbot.py"]
-
+CMD [ "python","itchat.py"]

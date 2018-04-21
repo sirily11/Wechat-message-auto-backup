@@ -1,33 +1,31 @@
 import itchat
-from chatterbot import ChatBot
-from chatterbot.trainers import ChatterBotCorpusTrainer
-import os
-import pyqrcode
+import pyrebase
 
+def pushData(username,data):
+    config = {
+            "apiKey": "",
+            "authDomain": "",
+            "databaseURL": "",
+            "projectId: ": "",
+            "storageBucket": "",
+    }
 
-deepThought = ChatBot("deepThought")
-deepThought.set_trainer(ChatterBotCorpusTrainer)
-deepThought.train("chatterbot.corpus.chinese")
+    firebase = pyrebase.initialize_app(config)
+    db = firebase.database()
+    result = db.child('wechat_data').child(username).push(data)
+    return result
 
-
-class sqlite3Helper:
-
-    def __init__(self):
-        pass
-
-    def saving_msg(self,account,msg):
-        pass
 
 @itchat.msg_register(itchat.content.TEXT)
 def text_reply(msg):
-    response = deepThought.get_response(msg['Text'])
-    print("from",msg['FromUserName'],msg['Text'])
-    print("to",response)
-    itchat.send(msg="This is a AI's response\n " + str(response) ,toUserName=msg['FromUserName'])
+    sender = msg['FromUserName']
+    reciver = msg['ToUserName']
+    msg = msg['Text']
+    result = pushData(username=sender,data=msg)
+    print("From {} : {}, Result : {}".format(sender,msg,result))
 
-dir_path = os.path.dirname(os.path.realpath(__file__)) + "/QR1.jpg"
-itchat.auto_login(hotReload=True)
 
+itchat.auto_login(hotReload=True,enableCmdQR=-2)
 itchat.run()
 
 
